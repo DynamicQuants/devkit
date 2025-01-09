@@ -1,0 +1,25 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: application
+language: typescript
+stack: frontend
+tags:
+  - nextjs
+  - app
+
+fileGroups:
+  src:
+    - 'src/**/*'
+    - 'package.json'
+    - 'tsup.config.ts'
+    - 'tsconfig.json'
+
+tasks:
+  build:
+    command: 'pnpm build'
+    description: 'Build the application'
+    type: build
+    inputs:
+      - '@group(src)'
+    outputs:
+      - './dist/**/*'
