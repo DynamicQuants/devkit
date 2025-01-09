@@ -7,5 +7,12 @@
     "**/.pytest_cache/": true,
     ".mypy_cache/": true,
     "**/.coverage": true
+  },
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.tera": "handlebars"
+  },
+  "[handlebars]": {
+    "editor.formatOnSave": false
   }
 }

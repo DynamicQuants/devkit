@@ -17,3 +17,6 @@ Thumbs.db
 # Moonrepo.
 .moon/cache
 .moon/docker
+
+# Node.
+node_modules
