@@ -8,13 +8,20 @@ inputs:
   proto-version:
     description: The version of Prototools to install
     default: '0.44.2'
+  install-dev-dependencies:
+    description: Whether to install the dev dependencies
+    default: true
 
 runs:
   using: 'composite'
   steps:
-    - uses: moonrepo/setup-toolchain@v0
-      name: 🌙 Setup Moon and Prototools
+    - name: '🌙 Setup Moon and Prototools'
+      uses: moonrepo/setup-toolchain@v0
       with:
         moon-version: ${{ inputs.moon-version }}
         proto-version: ${{ inputs.proto-version }}
         auto-install: true
+
+    - name: '⬇️ Install Root Dev Dependencies'
+      if: ${{ inputs.install-dev-dependencies }}
+      run: 'pnpm install --dev'
