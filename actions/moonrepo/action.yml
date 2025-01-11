@@ -25,3 +25,4 @@ runs:
     - name: '⬇️ Install Root Dev Dependencies'
       if: ${{ inputs.install-dev-dependencies }}
       run: 'pnpm install --dev'
+      shell: bash
