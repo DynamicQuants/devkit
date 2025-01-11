@@ -1,11 +1,12 @@
 $schema: 'https://moonrepo.dev/schemas/project.json'
 
-type: application
+type: configuration
 language: typescript
-stack: frontend
+stack: systems
+platform: node
 tags:
-  - nextjs
-  - app
+  - node
+  - package
 
 fileGroups:
   src:
@@ -22,4 +23,4 @@ tasks:
     inputs:
       - '@group(src)'
     outputs:
-      - './dist/**/*'
+      - '@group(dist)'
