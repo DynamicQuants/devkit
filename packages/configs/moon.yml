@@ -24,3 +24,8 @@ tasks:
       - '@group(src)'
     outputs:
       - '@group(dist)'
+
+  test:
+    command: 'echo "🧪 This package has no tests yet"'
+    description: 'Run the tests'
+    type: test

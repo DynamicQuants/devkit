@@ -3,7 +3,7 @@
   "changelog": ["@changesets/changelog-github", { "repo": "DynamicQuants/devkit" }],
   "commit": false,
   "fixed": [],
-  "linked": [["@dynamic-quants/cli", "@dynamic-quants/configs"]],
+  "linked": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
