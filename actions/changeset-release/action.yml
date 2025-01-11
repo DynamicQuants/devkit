@@ -12,10 +12,10 @@ inputs:
     default: '🔧 chore: update version'
   version:
     description: The version command to set the version
-    default: 'moon ci :version'
+    default: 'pnpm changeset version'
   publish:
     description: The publish command
-    default: 'moon ci :publish'
+    default: 'pnpm changeset publish'
 
 runs:
   using: 'composite'
