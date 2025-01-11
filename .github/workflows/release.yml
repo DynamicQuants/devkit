@@ -1,0 +1,40 @@
+name: Release and Publish
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    # Prevent this workflow from running on forks.
+    if: github.repository == 'DynamicQuants/devkit'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - name: '🔄 Checkout the repository'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: '📄 Check for pre.json file existence'
+        id: check_files
+        uses: andstor/file-existence-action@v3.0.0
+        with:
+          files: '.changeset/pre.json'
+
+      - name: '🌙 Setup Moonrepo and Prototools'
+        uses: DynamicQuants/devkit/actions/moonrepo@main
+
+      - name: '📦 Release or Publish'
+        id: changesets
+        if: steps.check_files.outputs.files_exists == 'false'
+        uses: DynamicQuants/devkit/actions/changeset-release@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
