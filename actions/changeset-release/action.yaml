@@ -1,0 +1,30 @@
+name: Release or Publish
+description: |
+  Create a pull request using when detecting a new version or publish to NPM when
+  the pull request is merged to the branch.
+
+inputs:
+  commit:
+    description: The commit message
+    default: '🔧 chore: update version'
+  title:
+    description: The pull request title
+    default: '🔧 chore: update version'
+  version:
+    description: The version command to set the version
+    default: 'moon ci :version'
+  publish:
+    description: The publish command
+    default: 'moon ci :publish'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: '🔖 Create Release Pull Request or Publish to NPM'
+      uses: changesets/action@v1
+      id: changesets
+      with:
+        commit: ${{ inputs.commit }}
+        title: ${{ inputs.title }}
+        version: ${{ inputs.version }}
+        publish: ${{ inputs.publish }}

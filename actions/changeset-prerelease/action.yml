@@ -1,0 +1,66 @@
+name: Pre-release
+description: |
+  Enter prerelease mode when detecting a new version or create a prerelease pull request
+  when detecting a new release.
+
+inputs:
+  repoName:
+    description: The repository name
+    required: true
+  tag:
+    description: The tag to enter prerelease mode
+    default: 'alpha'
+  version:
+    description: The version command to set the version
+    default: 'moon ci :version'
+  publish:
+    description: The publish command
+    default: 'moon ci :publish'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: '📋 Check for pre.json file existence'
+      id: check_files
+      uses: andstor/file-existence-action@v3.0.0
+      with:
+        files: '.changeset/pre.json'
+
+    - name: '🔑 Enter prerelease mode'
+      # If .changeset/pre.json does not exist and we did not recently exit
+      # prerelease mode, enter prerelease mode with tag {{ inputs.tag }}
+      if: steps.check_files.outputs.files_exists == 'false' && !contains(github.event.head_commit.message, 'exit prerelease mode')
+      run: |
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config user.name "github-actions[bot]"
+        npx changeset pre enter {{ inputs.tag }}
+        git add -A
+        git commit -m '🔧 chore: enter prerelease mode'
+        git push
+      shell: bash
+
+    - name: '🔖 Create prerelease PR'
+      # If .changeset/pre.json exists and we are not currently cutting a release after
+      # merging a Version Packages PR
+      if: steps.check_files.outputs.files_exists == 'true' && !contains(github.event.head_commit.message, 'update version')
+      uses: changesets/action@v1
+      with:
+        commit: '🔧 chore: update version'
+        title: '🔧 chore: update version'
+        version: ${{ inputs.version }}
+        branch: 'prerelease'
+
+    - name: '📦 Publish to npm + GitHub'
+      id: changesets
+      # Only run publish if we're still in pre mode and the last commit was
+      # via an automatically created Version Packages PR
+      if: steps.check_files.outputs.files_exists == 'true' && contains(github.event.head_commit.message, 'update version')
+      uses: changesets/action@v1
+      with:
+        version: "echo 'This step should never version'"
+        publish: ${{ inputs.publish }}
+
+    - name: '🏷️ Tag release on npm'
+      if: steps.changesets.outcome == 'success'
+      run: npm dist-tag add ${{ inputs.repoName }}@${{ fromJson(steps.changesets.outputs.publishedPackages)[0].version }} ${{ inputs.tag }}
+      shell: bash

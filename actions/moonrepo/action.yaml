@@ -1,0 +1,20 @@
+name: Moonrepo Toolchain
+description: Setup the project toolchain using Moonrepo and Prototools
+
+inputs:
+  moon-version:
+    description: The version of Moonrepo to install
+    default: '1.30.6'
+  proto-version:
+    description: The version of Prototools to install
+    default: '0.44.2'
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: moonrepo/setup-toolchain@v0
+      name: 🌙 Setup Moon and Prototools
+      with:
+        moon-version: ${{ inputs.moon-version }}
+        proto-version: ${{ inputs.proto-version }}
+        auto-install: true
