@@ -6,6 +6,7 @@ projects:
 vcs:
   manager: 'git'
   defaultBranch: 'main'
+  provider: 'github'
 
 generator:
   templates:
