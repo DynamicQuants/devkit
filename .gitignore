@@ -23,6 +23,4 @@ node_modules
 
 # Verdaccio.
 .verdaccio
-.verdaccio
-.verdaccio
 !.verdaccio/config.yaml
