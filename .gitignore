@@ -20,3 +20,9 @@ Thumbs.db
 
 # Node.
 node_modules
+
+# Verdaccio.
+.verdaccio
+.verdaccio
+.verdaccio
+!.verdaccio/config.yaml
