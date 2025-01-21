@@ -4,13 +4,16 @@ description: Setup the project toolchain using Moonrepo and Prototools
 inputs:
   moon-version:
     description: The version of Moonrepo to install
-    default: '1.30.6'
+    default: '1.31.2'
   proto-version:
     description: The version of Prototools to install
-    default: '0.44.2'
-  install-dev-dependencies:
-    description: Whether to install the dev dependencies
-    default: true
+    default: '0.44.7'
+  base:
+    description: The base branch to create the pull request from
+    optional: true
+  head:
+    description: The head branch to create the pull request from
+    optional: true
 
 runs:
   using: 'composite'
@@ -22,7 +25,13 @@ runs:
         proto-version: ${{ inputs.proto-version }}
         auto-install: true
 
-    - name: '⬇️ Install Root Dev Dependencies'
-      if: ${{ inputs.install-dev-dependencies }}
-      run: 'pnpm install --no-frozen-lockfile'
+    - name: '⚙️ Run Moon CI'
+      run: 'moon ci --color'
       shell: bash
+      env:
+        MOON_BASE: ${{ inputs.base }}
+        MOON_HEAD: ${{ inputs.head }}
+
+    - name: '🔍 Moon CI Retrospect'
+      uses: appthrust/moon-ci-retrospect@v1
+      if: success() || failure()
