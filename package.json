@@ -1,10 +1,12 @@
 {
   "name": "devkit",
   "version": "1.0.0",
-  "description": "",
+  "description": "Dynamic Quants DevKit Monorepo",
   "private": true,
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "action": "act --env-file ./.act/envs --var-file ./.act/variables --secret-file ./.act/secrets -j"
+  },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.11"
