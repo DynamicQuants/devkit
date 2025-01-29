@@ -1,0 +1,9 @@
+{
+  "exec": "node --import=tsx",
+  "watch": [
+    "src"
+  ],
+  "ext": ".json,.ts,.env",
+  "stdin": false,
+  "restartable": false
+}
