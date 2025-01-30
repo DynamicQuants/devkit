@@ -1,11 +1,14 @@
 $schema: 'https://moonrepo.dev/schemas/project.json'
 
-type: application
+id: cli
+type: tool
 language: typescript
-stack: backend
+stack: systems
+platform: node
 tags:
   - node
   - cli
+
 dependsOn:
   - configs
 
@@ -20,10 +23,10 @@ fileGroups:
     - 'tsconfig.spec.json'
 
 tasks:
-  # Builds the library.
+  # Builds the Application.
   build:
     command: 'pnpm build'
-    description: 'Builds the library'
+    description: 'Builds the application'
     type: build
     inputs:
       - '@group(src)'
@@ -34,13 +37,16 @@ tasks:
       - 'lint'
       - 'format-check'
       - 'test'
+    options:
+      runDepsInParallel: false
 
   # Runs the CLI in development mode.
   dev:
     command: 'pnpm dev'
     description: 'Runs the CLI in development mode'
     type: run
-    local: true
+    options:
+      runInCI: false
     inputs:
       - '@group(src)'
 
@@ -49,6 +55,8 @@ tasks:
     command: 'pnpm start'
     description: 'Start the CLI in production mode from built files'
     type: run
+    options:
+      runInCI: false
     deps:
       - 'build'
 
@@ -67,6 +75,8 @@ tasks:
     command: 'pnpm test'
     description: 'Runs unit tests'
     type: test
+    options:
+      runInCI: affected
     inputs:
       - '@group(src)'
       - '@group(tests)'
@@ -77,6 +87,8 @@ tasks:
   test-watch:
     command: 'pnpm test-watch'
     description: 'Runs unit tests in watch mode'
+    options:
+      runInCI: false
     type: test
     inputs:
       - '@group(src)'
@@ -89,6 +101,8 @@ tasks:
     command: 'pnpm test-cov'
     description: 'Runs unit tests with coverage'
     type: test
+    options:
+      runInCI: false
     inputs:
       - '@group(src)'
       - '@group(tests)'
@@ -100,6 +114,8 @@ tasks:
     command: 'pnpm format'
     description: 'Formats the code using Prettier'
     type: run
+    options:
+      runInCI: false
     inputs:
       - '@group(src)'
       - '@group(tests)'
@@ -111,6 +127,8 @@ tasks:
     command: 'pnpm format-check'
     description: 'Checks formatting using Prettier'
     type: run
+    options:
+      runInCI: affected
     inputs:
       - '@group(src)'
       - '@group(tests)'
