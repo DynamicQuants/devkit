@@ -14,5 +14,6 @@
   },
   "[handlebars]": {
     "editor.formatOnSave": false
-  }
+  },
+  "yaml.schemaStore.enable": true
 }
