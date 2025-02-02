@@ -5,7 +5,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "action": "act --env-file ./.act/envs --var-file ./.act/variables --secret-file ./.act/secrets -j"
+    "act": "act --env-file ./.act/envs --var-file ./.act/variables --secret-file ./.act/secrets -j"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.0",
