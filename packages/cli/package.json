@@ -1,5 +1,5 @@
 {
-  "name": "@dynamic-quants/cli",
+  "name": "@dynamic-quants/devkit-cli",
   "version": "0.0.0",
   "description": "Dynamic Quants CLI",
   "keywords": [
@@ -7,15 +7,19 @@
     "node"
   ],
   "bin": {
-    "@dynamic-quants/cli": "./src/index.js"
+    "@dynamic-quants/devkit-cli": "./src/index.js"
   },
+  "files": [
+    "dist",
+    "files"
+  ],
   "scripts": {
     "clean": "rimraf dist",
-    "copy": "copyfiles -f README.md package.json dist",
+    "copy": "copyfiles -f README.md package.json dist && copyfiles ./files/**/* dist",
     "build": "pnpm clean && tsc -p tsconfig.app.json && pnpm copy",
     "lint": "eslint \"{src,tests}/**/*.{ts,json}\" --fix",
-    "dev": "nodemon ./src/main.ts",
-    "start": "node dist/src/main.js",
+    "dev": "nodemon ./src/index.ts",
+    "start": "node dist/src/index.js",
     "test": "jest --verbose",
     "test-watch": "jest --watch",
     "test-cov": "jest --coverage",

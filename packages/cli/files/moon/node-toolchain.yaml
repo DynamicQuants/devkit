@@ -1,0 +1,11 @@
+node:
+  version: 20.18.1
+  packageManager: pnpm
+  syncPackageManagerField: true
+  pnpm:
+    version: 9.15.3
+  addEnginesConstraint: true
+  dedupeOnLockfileChange: true
+  dependencyVersionFormat: workspace
+  syncProjectWorkspaceDependencies: true
+  syncVersionManagerConfig: nvm
