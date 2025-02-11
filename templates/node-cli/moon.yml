@@ -1,0 +1,36 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+id: configs
+type: configuration
+language: typescript
+stack: systems
+platform: node
+tags:
+  - node
+  - package
+
+fileGroups:
+  src:
+    - 'src/**/*'
+    - 'package.json'
+    - 'tsup.config.ts'
+    - 'tsconfig.json'
+  dist:
+    - './dist/**/*'
+
+tasks:
+  build:
+    command: 'pnpm build'
+    description: 'Build the application'
+    type: build
+    inputs:
+      - '@group(src)'
+    outputs:
+      - '@group(dist)'
+
+  test:
+    command: 'echo "🧪 This package has no tests yet"'
+    description: 'Run the tests'
+    type: test
+    options:
+      runInCI: affected
