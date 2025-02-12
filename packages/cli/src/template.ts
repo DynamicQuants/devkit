@@ -65,32 +65,5 @@ export class Template {
         },
         [] as unknown as Promise<Template[]>,
       );
-
-    // templates.map(async (template) => {
-    //   const data = await getContent(template.path + '/moon.yml');
-    //   console.log(data);
-    // });
-
-    // console.log('Directories: ', directories);
-
-    // const templates = fs
-    //   .readdirSync(path)
-    //   .filter(
-    //     (item) =>
-    //       fs.statSync(join(path, item)).isDirectory() &&
-    //       fs.existsSync(join(path, item, 'moon.yml')) &&
-    //       fs.existsSync(join(path, item, 'devkit.json')),
-    //   );
-
-    // return templates.map((name) => {
-    //   const templatePath = join(path, name);
-
-    //   // Reading metadata from devkit.json file.
-    //   const {
-    //     template: { description, language, type },
-    //   } = JSON.parse(readFileSync(resolve(templatePath, 'devkit.json'), 'utf8'));
-
-    //   return new Template(name, description, templatePath, language, type);
-    // });
   }
 }
