@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "name": "node-cli",
   "description": "Node CLI template",
-  "language": "nodejs",
+  "language": "node",
   "kind": "app",
   "peerDependencies": {
     "@types/jest": "^29.5.14",
