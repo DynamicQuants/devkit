@@ -2,21 +2,21 @@
   "name": "@dynamic-quants/devkit-cli",
   "version": "0.0.0",
   "description": "Dynamic Quants CLI",
+  "license": "MIT",
   "keywords": [
     "cli",
     "node"
   ],
   "bin": {
-    "@dynamic-quants/devkit-cli": "./src/index.js"
+    "devkit": "./dist/src/index.mjs"
   },
   "files": [
-    "dist",
-    "files"
+    "dist"
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "copy": "copyfiles -f README.md package.json dist && copyfiles ./files/**/* dist",
-    "build": "pnpm clean && tsc -p tsconfig.app.json && pnpm copy",
+    "copy": "copyfiles ./files/**/* dist",
+    "build": "pnpm clean && tsup",
     "lint": "eslint \"{src,tests}/**/*.{ts,json}\" --fix",
     "dev": "nodemon ./src/index.ts",
     "start": "node dist/src/index.js",
@@ -31,6 +31,8 @@
     "chalk": "^4.1.2",
     "commander": "^12.1.0",
     "inquirer": "^12.2.0",
+    "ora": "^8.2.0",
+    "tiged": "^2.12.7",
     "yaml": "^2.7.0"
   },
   "devDependencies": {
@@ -46,6 +48,7 @@
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "tslib": "^2.8.1",
+    "tsup": "^8.3.5",
     "tsx": "^4.19.2",
     "typescript": "~5.6.3"
   },
