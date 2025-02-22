@@ -23,67 +23,60 @@
     "type": "git",
     "url": "https://github.com/DynamicQuants/devkit.git"
   },
-  "files": [
-    "dist",
-    "tsconfig",
-    "README.md",
-    "LICENSE",
-    "peers.json"
-  ],
   "exports": {
     "./eslint": {
-      "import": "./dist/eslint.mjs",
-      "require": "./dist/eslint.js"
+      "import": "./src/eslint.mjs",
+      "require": "./src/eslint.js"
     },
     "./jest": {
-      "import": "./dist/jest.mjs",
-      "require": "./dist/jest.js"
+      "import": "./src/jest.mjs",
+      "require": "./src/jest.js"
     },
     "./playwright": {
-      "import": "./dist/playwright.mjs",
-      "require": "./dist/playwright.js"
+      "import": "./src/playwright.mjs",
+      "require": "./src/playwright.js"
     },
     "./prettier": {
-      "import": "./dist/prettier.mjs",
-      "require": "./dist/prettier.js"
+      "import": "./src/prettier.mjs",
+      "require": "./src/prettier.js"
     },
     "./vite": {
-      "import": "./dist/vite.mjs",
-      "require": "./dist/vite.js"
+      "import": "./src/vite.mjs",
+      "require": "./src/vite.js"
     },
     "./tailwind": {
-      "import": "./dist/tailwind.mjs",
-      "require": "./dist/tailwind.js"
+      "import": "./src/tailwind.mjs",
+      "require": "./src/tailwind.js"
     },
     "./tsconfig/*.json": "./tsconfig/*.json"
   },
   "typesVersions": {
     "*": {
       "eslint": [
-        "./dist/eslint.d.ts"
+        "./src/eslint.d.ts"
       ],
       "jest": [
-        "./dist/jest.d.ts"
+        "./src/jest.d.ts"
       ],
       "playwright": [
-        "./dist/playwright.d.ts"
+        "./src/playwright.d.ts"
       ],
       "prettier": [
-        "./dist/prettier.d.ts"
+        "./src/prettier.d.ts"
       ],
       "tailwind": [
-        "./dist/tailwind.d.ts"
+        "./src/tailwind.d.ts"
       ],
       "vite": [
-        "./dist/vite.d.ts"
+        "./src/vite.d.ts"
       ]
     }
   },
   "scripts": {
     "format": "prettier --write \"src/**/*.{js,ts,md,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,md,json}\"",
-    "cp": "copyfiles -f ./src/jest/snapshotResolver.js ./src/jest/.swcrc ./peers.json ./dist",
-    "build": "tsup"
+    "cp": "copyfiles -f package.json README.md LICENSE ./dist && copyfiles -f ./src/jest/snapshotResolver.js ./src/jest/.swcrc ./peers.json ./dist/src && copyfiles -f ./tsconfig/*.json ./dist/tsconfig",
+    "build": "rimraf dist && tsup"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.3",
@@ -109,6 +102,7 @@
     "next": "15.0.3",
     "prettier": "^3.3.3",
     "prettier-plugin-multiline-arrays": "^3.0.6",
+    "rimraf": "^6.0.1",
     "tailwindcss": "3.4.15",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
