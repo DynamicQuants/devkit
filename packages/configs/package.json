@@ -23,59 +23,62 @@
     "type": "git",
     "url": "https://github.com/DynamicQuants/devkit.git"
   },
+  "files": [
+    "dist"
+  ],
   "exports": {
     "./eslint": {
-      "import": "./src/eslint.mjs",
-      "require": "./src/eslint.js"
+      "import": "./dist/eslint.mjs",
+      "require": "./dist/eslint.js"
     },
     "./jest": {
-      "import": "./src/jest.mjs",
-      "require": "./src/jest.js"
+      "import": "./dist/jest.mjs",
+      "require": "./dist/jest.js"
     },
     "./playwright": {
-      "import": "./src/playwright.mjs",
-      "require": "./src/playwright.js"
+      "import": "./dist/playwright.mjs",
+      "require": "./dist/playwright.js"
     },
     "./prettier": {
-      "import": "./src/prettier.mjs",
-      "require": "./src/prettier.js"
+      "import": "./dist/prettier.mjs",
+      "require": "./dist/prettier.js"
     },
     "./vite": {
-      "import": "./src/vite.mjs",
-      "require": "./src/vite.js"
+      "import": "./dist/vite.mjs",
+      "require": "./dist/vite.js"
     },
     "./tailwind": {
-      "import": "./src/tailwind.mjs",
-      "require": "./src/tailwind.js"
+      "import": "./dist/tailwind.mjs",
+      "require": "./dist/tailwind.js"
     },
-    "./tsconfig/*.json": "./tsconfig/*.json"
+    "./tsconfig/*.json": "./dist/tsconfig/*.json"
   },
   "typesVersions": {
     "*": {
       "eslint": [
-        "./src/eslint.d.ts"
+        "./dist/eslint.d.ts"
       ],
       "jest": [
-        "./src/jest.d.ts"
+        "./dist/jest.d.ts"
       ],
       "playwright": [
-        "./src/playwright.d.ts"
+        "./dist/playwright.d.ts"
       ],
       "prettier": [
-        "./src/prettier.d.ts"
+        "./dist/prettier.d.ts"
       ],
       "tailwind": [
-        "./src/tailwind.d.ts"
+        "./dist/tailwind.d.ts"
       ],
       "vite": [
-        "./src/vite.d.ts"
+        "./dist/vite.d.ts"
       ]
     }
   },
   "scripts": {
     "format": "prettier --write \"src/**/*.{js,ts,md,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,md,json}\"",
-    "cp": "copyfiles -f package.json README.md LICENSE ./dist && copyfiles -f ./src/jest/snapshotResolver.js ./src/jest/.swcrc ./peers.json ./dist/src && copyfiles -f ./tsconfig/*.json ./dist/tsconfig",
+    "cp": "copyfiles -f ./src/jest/snapshotResolver.js ./src/jest/.swcrc ./peers.json ./dist && copyfiles -f ./tsconfig/*.json ./dist/tsconfig",
     "build": "rimraf dist && tsup"
   },
   "devDependencies": {
