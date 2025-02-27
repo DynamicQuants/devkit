@@ -2,19 +2,20 @@
   "name": "node-cli",
   "version": "0.0.0",
   "description": "Node CLI template",
+  "private": true,
   "keywords": [
     "cli",
     "node"
   ],
   "bin": {
-    "node-cli": "./src/index.js"
+    "node-cli": "./dist/src/index.js"
   },
   "files": [
     "dist"
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "copy": "copyfiles -f README.md package.json dist && copyfiles ./files/**/* dist",
+    "copy": "copyfiles ./files/**/* dist",
     "build": "pnpm clean && tsup",
     "lint": "eslint \"{src,tests}/**/*.{ts,json}\" --fix",
     "dev": "nodemon ./src/index.ts",

@@ -9,9 +9,6 @@ tags:
   - node
   - cli
 
-dependsOn:
-  - configs
-
 fileGroups:
   src:
     - 'src/**/*'
@@ -33,7 +30,6 @@ tasks:
     outputs:
       - 'dist/**/*'
     deps:
-      - 'configs:build'
       - 'lint'
       - 'format-check'
       - 'test'
