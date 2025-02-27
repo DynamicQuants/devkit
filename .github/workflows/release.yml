@@ -30,8 +30,6 @@ jobs:
 
       - name: '🌙 Setup Moonrepo and Prototools'
         uses: DynamicQuants/devkit/actions/moonrepo@main
-        with:
-          install-dev-dependencies: true
 
       - name: '📦 Release or Publish'
         id: changesets
