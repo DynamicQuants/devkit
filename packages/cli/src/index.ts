@@ -1,18 +1,20 @@
 import { program } from 'commander';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 
 import logger from './logger';
 import promps from './promps';
-import { Tools } from './toolchain';
-import { Workspace, WorkspaceScope } from './workspace';
+import { Template } from './template';
+import { Language, Scope, Tools } from './types';
+import { Workspace } from './workspace';
 
 /**
- * Create command.
  * Creates a new workspace for the selected type.
  */
 async function create() {
-  const name = await promps.namePrompt();
-  const description = await promps.descriptionPrompt();
+  const name = await promps.namePrompt('workspace');
+  const description = await promps.descriptionPrompt('workspace');
+  const languages = await promps.workspaceLanguagesPrompt();
   const scope = await promps.workspaceScopePrompt();
   const repoName = await promps.repoNamePrompt();
   const tools = await promps.toolsPrompt();
@@ -21,39 +23,64 @@ async function create() {
     scope,
     name,
     description,
+    languages,
     tools,
     repoName,
   });
 
   await workspace.create();
+  logger.stop();
 }
 
-function main() {
-  const packageJSON = join(__dirname, '..', 'package.json');
-  const packageJson = require(packageJSON);
-  program.version(packageJson.version).description('Dynamic Quants DevKit CLI');
-  program.command('create').description('Create a new workspace').action(create);
-  program.parse(process.argv);
-}
+async function template() {
+  // Load workspace and check if it is valid.
+  const workspace = await Workspace.load();
 
-async function main2() {
-  logger.logo();
-  const workspace = new Workspace({
-    scope: WorkspaceScope.SYSTEM_MONOREPO,
-    name: `test-workspace-${Date.now()}`,
-    description: 'Some description',
-    tools: [
-      Tools.NODEJS,
-      Tools.PYTHON,
-      Tools.ACT,
-      Tools.VERDACCIO,
-      Tools.CHANGESETS,
-      Tools.COMMITLINT,
-    ],
-    repoName: `@ccosming/test-workspace-${Date.now()}`,
-    path: '/Users/ccosming/Temp/devkit-test',
+  // Get the template name and description.
+  const name = await promps.namePrompt('project');
+  const description = await promps.descriptionPrompt('project');
+  const tmpl = await promps.templatePrompt(workspace.config.languages, workspace.config.scope);
+
+  const template = new Template({
+    name,
+    description,
+    template: tmpl,
+    workspace,
   });
+
+  await template.setup();
+}
+
+async function test() {
+  const workspace = new Workspace(
+    {
+      scope: Scope.SYSTEM_MONOREPO,
+      name: `test-workspace-${Date.now()}`,
+      description: 'Some description',
+      languages: [Language.NODEJS, Language.PYTHON],
+      tools: [Tools.ACT, Tools.VERDACCIO, Tools.CHANGESETS, Tools.COMMITLINT],
+      repoName: `@ccosming/test-workspace-${Date.now()}`,
+    },
+    '/Users/ccosming/Temp/devkit-test',
+  );
   await workspace.create();
 }
 
-main2();
+function main() {
+  logger.logo();
+
+  const packageJSON = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8'));
+  program.version(packageJSON.version).description('Dynamic Quants DevKit CLI');
+  program
+    .command('create')
+    .description('Create a new workspace with the selected configuration')
+    .action(create);
+  program
+    .command('template')
+    .description('Add a new project to the workspace based on a template')
+    .action(template);
+  program.command('test').description('Test the workspace').action(test);
+  program.parse(process.argv);
+}
+
+main();

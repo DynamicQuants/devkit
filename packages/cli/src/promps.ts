@@ -1,7 +1,8 @@
 import inquirer from 'inquirer';
 
-import { Tools } from './toolchain';
-import { WorkspaceScope } from './workspace';
+import { loadTemplates } from './helpers';
+import type { TemplateInfo } from './template';
+import { Language, License, Scope, Tools } from './types';
 
 /**
  * Validate a kebab case name.
@@ -10,11 +11,11 @@ import { WorkspaceScope } from './workspace';
  */
 function validateKebabCaseName(value: string) {
   if (!value || value.trim() === '') {
-    return 'Workspace name is required';
+    return 'Name is required';
   }
 
   if (!/^[a-z]+(-[a-z]+)*$/.test(value)) {
-    return 'Workspace name must be in kebab case';
+    return 'Name must be in kebab case (e.g. my-project)';
   }
 
   return true;
@@ -38,15 +39,15 @@ function validateRepoName(value: string) {
 }
 
 /**
- * Prompt for the name of the workspace.
- * @returns The name of the workspace.
+ * Prompt for the name of the workspace/project.
+ * @returns The name of the workspace/project.
  */
-async function namePrompt() {
+async function namePrompt(suffix: 'project' | 'workspace') {
   const { name } = await inquirer.prompt<{ name: string }>([
     {
       type: 'input',
       name: 'name',
-      message: 'What is the name of the workspace?',
+      message: `What is the name of the ${suffix}?`,
       validate: validateKebabCaseName,
       default: 'my-project',
     },
@@ -56,15 +57,15 @@ async function namePrompt() {
 }
 
 /**
- * Prompt for the description of the workspace.
- * @returns The description of the workspace.
+ * Prompt for the description of the workspace/project.
+ * @returns The description of the workspace/project.
  */
-async function descriptionPrompt() {
+async function descriptionPrompt(suffix: 'project' | 'workspace') {
   const { description } = await inquirer.prompt<{ description: string }>([
     {
       type: 'input',
       name: 'description',
-      message: 'What is the description of the workspace?',
+      message: `What is the description of the ${suffix}?`,
       default: 'My project',
     },
   ]);
@@ -93,16 +94,29 @@ async function publishableLibraryPrompt() {
  * @returns The scope of the workspace.
  */
 async function workspaceScopePrompt() {
-  const { scope } = await inquirer.prompt<{ scope: WorkspaceScope }>([
+  const { scope } = await inquirer.prompt<{ scope: Scope }>([
     {
       type: 'list',
-      choices: Object.values(WorkspaceScope),
+      choices: Object.values(Scope),
       name: 'scope',
       message: 'What scope do you want to use?',
     },
   ]);
 
   return scope;
+}
+
+async function workspaceLanguagesPrompt() {
+  const { languages } = await inquirer.prompt<{ languages: Language[] }>([
+    {
+      type: 'checkbox',
+      choices: Object.values(Language),
+      name: 'languages',
+      message: 'What languages do you want to use?',
+    },
+  ]);
+
+  return languages;
 }
 
 /**
@@ -121,20 +135,6 @@ async function toolsPrompt() {
 
   return tools;
 }
-
-/**
- * Represents the license of the workspace.
- */
-const License = {
-  MIT: 'MIT',
-  APACHE_2_0: 'APACHE_2_0',
-  GPL_3_0: 'GPL_3_0',
-  BSD_3_CLAUSE: 'GPL_3_0',
-  ISC: 'ISC',
-  UNLICENSED: 'UNLICENSED',
-} as const;
-
-type License = (typeof License)[keyof typeof License];
 
 /**
  * Prompt for the license of the workspace.
@@ -186,15 +186,59 @@ async function isPrivatePrompt() {
   return isPrivate;
 }
 
+/**
+ * Prompt for available templates.
+ * @returns The template of the workspace.
+ */
+async function templatePrompt(languages: Language[], scope: Scope) {
+  const { template } = await inquirer.prompt<{ template: TemplateInfo }>([
+    {
+      type: 'list',
+      name: 'template',
+      message: 'What is the template you want to use?',
+      choices: (await loadTemplates())
+        .filter(
+          (template) => languages.includes(template.language) || template.scope.includes(scope),
+        )
+        .map((template) => ({
+          name: `${template.name}: ${template.description}`,
+          value: template,
+        })),
+    },
+  ]);
+
+  return template;
+}
+
+/**
+ * Prompt for the workspace directories.
+ * @returns The workspace directories.
+ */
+async function templateDestinationPrompt(choices: string[]) {
+  const { templateDestination } = await inquirer.prompt<{ templateDestination: string }>([
+    {
+      type: 'list',
+      name: 'templateDestination',
+      message: 'Where do you want to install the template?',
+      choices,
+    },
+  ]);
+
+  return templateDestination;
+}
+
 export default {
   namePrompt,
   descriptionPrompt,
   publishableLibraryPrompt,
   workspaceScopePrompt,
+  workspaceLanguagesPrompt,
   toolsPrompt,
   licensePrompt,
   isPrivatePrompt,
   repoNamePrompt,
+  templatePrompt,
+  templateDestinationPrompt,
 };
 
 export { License };

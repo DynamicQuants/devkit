@@ -13,8 +13,8 @@ const PACKAGE_JSON_ACT_SCRIPT =
 
 const ADD_ACT_SCRIPT_TO_PACKAGE_JSON = `pnpm pkg set scripts.act="${PACKAGE_JSON_ACT_SCRIPT}"`;
 
-export default function installAct() {
-  runCommand({ command: INSTALL_ACT, name: 'Act' });
+export default async function installAct() {
+  await runCommand({ command: INSTALL_ACT, name: 'Installing Act tool' });
 
   // Create act directory.
   mkdirSync(join(process.cwd(), '.act'), { recursive: true });
@@ -25,6 +25,6 @@ export default function installAct() {
   });
 
   // Adding scripts to package.json.
-  logger.info('Adding Act scripts to package.json...');
-  runCommand({ command: ADD_ACT_SCRIPT_TO_PACKAGE_JSON, name: 'Setting up Act scripts' });
+  await logger.info('Adding Act scripts to package.json...');
+  await runCommand({ command: ADD_ACT_SCRIPT_TO_PACKAGE_JSON, name: 'Setting up Act scripts' });
 }

@@ -31,13 +31,13 @@ const verdaccioInstructions = {
  * Install and configure Verdaccio tool.
  * For more information, please visit https://verdaccio.org/.
  */
-
-export default function installVerdaccio() {
+export default async function installVerdaccio() {
   // Check if docker is installed.
-  const dockerCheck = runCommand({ command: 'docker --version', name: 'Docker Version' });
+  const dockerCheck = await runCommand({ command: 'docker --version', name: 'Checking Docker' });
   if (!dockerCheck.success) {
-    logger.warn('Docker is not installed, please install it first.');
-    logger.info('Please install Docker from https://docs.docker.com/get-docker/');
+    await logger.warn(
+      'Docker is not installed. Please install Docker from https://docs.docker.com/get-docker/',
+    );
     return;
   }
 

@@ -1,9 +1,11 @@
+import { Octokit } from '@octokit/rest';
 import { execSync } from 'child_process';
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import yaml from 'yaml';
 
 import logger from './logger';
+import type { TemplateInfo } from './template';
 
 type CommandResult = {
   name: string;
@@ -15,7 +17,6 @@ type CommandOptions = {
   command: string | (() => void);
   name: string;
   logMessage?: boolean;
-  initialMessage?: string;
   stdio?: 'inherit' | 'ignore' | 'pipe' | 'overlapped';
 };
 
@@ -65,12 +66,10 @@ function setFileData(
  * @param options - The command options.
  * @returns The command result.
  */
-function runCommand(options: CommandOptions): CommandResult {
-  const { command, name, initialMessage, logMessage = true, stdio = 'ignore' } = options;
+async function runCommand(options: CommandOptions): Promise<CommandResult> {
+  const { command, name, stdio = 'ignore' } = options;
 
-  if (initialMessage) {
-    logger.info(initialMessage);
-  }
+  await logger.info(name);
 
   try {
     let result = '';
@@ -78,15 +77,11 @@ function runCommand(options: CommandOptions): CommandResult {
       command();
     } else {
       result = execSync(command, { encoding: 'utf8', stdio });
-      if (logMessage) {
-        logger.success(`${name} command executed successfully`);
-      }
     }
     return { name, success: true, result };
   } catch (error) {
-    if (logMessage) {
-      logger.error(`${name} command failed: ${error}`);
-    }
+    await logger.error(`${name} command failed: ${error}`);
+
     return { name, success: false, result: '' };
   }
 }
@@ -133,5 +128,61 @@ function copyFiles(files: string[], destination: string = process.cwd()) {
   });
 }
 
-export { setFileData, runCommand, addInstructions, getInstructions, copyFiles };
+/**
+ * Load devkit repo content.
+ *
+ * @param path - The path to the content.
+ * @returns An array of files content.
+ */
+async function loadRepoContent(path: string) {
+  const github = new Octokit();
+
+  // Load templates from github devkit repo.
+  const { data } = await github.rest.repos.getContent({
+    owner: 'DynamicQuants',
+    repo: 'devkit',
+    ref: 'main',
+    path,
+  });
+
+  if (!Array.isArray(data)) {
+    await logger.error(`No data found for path: ${path}`);
+    return [];
+  }
+
+  return data;
+}
+
+async function loadTemplates(): Promise<TemplateInfo[]> {
+  const data = await loadRepoContent('templates');
+  const templates = Promise.all(
+    data
+      .filter((item) => item.type === 'dir')
+      .filter(async (item) => {
+        const content = await loadRepoContent(item.path);
+        const moonYmlContent = content.find((item) => item.name === 'moon.yml');
+        const devkitJsonContent = content.find((item) => item.name === 'devkit.json');
+        return moonYmlContent && devkitJsonContent;
+      })
+      .map(async (template) => {
+        const content = await loadRepoContent(template.path);
+        const devkit = content.find((item) => item.name === 'devkit.json');
+
+        const devkitContent = await fetch(devkit.download_url);
+        const devkitText = await devkitContent.text();
+        const devkitJson = JSON.parse(devkitText);
+
+        return {
+          name: template.name,
+          description: devkitJson.description,
+          language: devkitJson.language,
+          path: template.path,
+        } as TemplateInfo;
+      }),
+  );
+
+  return templates;
+}
+
+export { setFileData, runCommand, addInstructions, getInstructions, copyFiles, loadTemplates };
 export type { CommandResult };

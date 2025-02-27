@@ -9,13 +9,13 @@ const UPGRADE_PROTO = 'proto upgrade';
 /**
  * Install the proto toolchain.
  */
-export default function installProto() {
-  const checkProto = runCommand({ command: CHECK_PROTO, name: 'Proto Check' });
+export default async function installProto() {
+  const checkProto = await runCommand({ command: CHECK_PROTO, name: 'Checking proto toolchain' });
 
   if (checkProto.success) {
-    runCommand({ command: UPGRADE_PROTO, name: 'Proto Upgrade' });
+    await runCommand({ command: UPGRADE_PROTO, name: 'Upgrading proto toolchain' });
   } else {
-    runCommand({ command: INSTALL_PROTO, name: 'Proto Install' });
+    await runCommand({ command: INSTALL_PROTO, name: 'Installing proto toolchain' });
   }
 
   // Create .prototools file.

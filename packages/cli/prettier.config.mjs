@@ -1,3 +1,3 @@
-import prettier from '@dynamic-quants/configs/prettier';
+import { prettierConfig } from '@dynamic-quants/configs/prettier';
 
-export default prettier;
+export default prettierConfig;

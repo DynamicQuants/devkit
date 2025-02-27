@@ -1,69 +1,78 @@
-import { Octokit } from '@octokit/rest';
-import YAML from 'yaml';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import tiged from 'tiged';
 
-const github = new Octokit();
+import { runCommand, setFileData } from './helpers';
+import logger from './logger';
+import promps from './promps';
+import { Language, type TemplateInfo } from './types';
+import { type Workspace } from './workspace';
 
-type TemplateContent = Awaited<ReturnType<typeof Template.getContent>>;
+interface TemplateProps {
+  name: string;
+  description: string;
+  template: TemplateInfo;
+  workspace: Workspace;
+}
 
-export class Template {
-  constructor(
-    public name: string,
-    public description: string,
-    public path: string,
-    public language: 'nodejs' | 'python',
-    public kind: 'app' | 'lib',
-  ) {}
+const NODE_INSTALL_DEPS = 'pnpm install';
+const UV_PYTHON_DEPS = 'uv pip install -r requirements.txt';
 
-  static async getContent(path: string) {
-    const { data } = await github.rest.repos.getContent({
-      owner: 'DynamicQuants',
-      repo: 'devkit',
-      ref: 'main',
-      path,
-    });
+/**
+ * A template is a set of files that are used to create a new project. It includes a devkit.json
+ * file that contains the devDependencies that are needed to run the project and other attributes
+ * that are used to configure the project.
+ */
+class Template {
+  private destination: string;
+  constructor(public props: TemplateProps) {}
 
-    if (!Array.isArray(data)) return [];
-
-    return data;
+  private async setDestination() {
+    const { workspace, name } = this.props;
+    const dirs = workspace.getTemplateDirs();
+    const workspaceDir = await promps.templateDestinationPrompt(dirs);
+    this.destination = join(workspace.config.rootPath, workspaceDir, name);
   }
 
-  private isValidTemplate(content: TemplateContent) {
-    const moonYmlContent = content.find((item) => item.name === 'moon.yml');
-    const devkitJsonContent = content.find((item) => item.name === 'devkit.json');
-    const templateYmlContent = content.find((item) => item.name === 'template.yml');
-    return moonYmlContent && devkitJsonContent && templateYmlContent;
+  get packageJSONLocation() {
+    return join(this.destination, 'package.json');
   }
 
-  public async getTemplates() {
-    const data = await Template.getContent('packages');
+  get devkitConfigLocation() {
+    return join(this.destination, 'devkit.json');
+  }
 
-    // Filtering only valid directories of templates.
-    const templates = data
-      .filter((item) => item.type === 'dir')
-      .reduce<Promise<Template[]>>(
-        async (acc, item) => {
-          const content = await Template.getContent(item.path);
-          const moonYmlContent = content.find((item) => item.name === 'moon.yml');
-          // const devkitJsonContent = content.find((item) => item.name === 'devkit.yml');
-          // const templateYmlContent = content.find((item) => item.name === 'template.yml');
+  public async setup() {
+    // Download the template.
+    await this.setDestination();
 
-          // if (!!moonYmlContent) return acc;
+    // Change the directory to the template destination.
+    await logger.info('Donwloading template');
+    const emitter = tiged(`DynamicQuants/devkit/${this.props.template.path}`, {});
+    await emitter.clone(this.destination);
 
-          // Download moon.yml using fetch
-          const moonYml = await fetch(moonYmlContent.download_url);
-          const textData = await moonYml.text();
+    // Change the directory to the template destination.
+    process.chdir(this.destination);
 
-          // Process yml file.
-          const yml = YAML.parse(textData);
+    // Replace the name in the package.json file and add devDependencies if it is a nodejs template.
+    if (this.props.template.language === Language.NODEJS) {
+      const packageJSON = JSON.parse(readFileSync(this.packageJSONLocation, 'utf8'));
+      const devkitConfig = JSON.parse(readFileSync(this.devkitConfigLocation, 'utf8'));
+      packageJSON.name = this.props.name;
+      packageJSON.description = this.props.description;
+      packageJSON.peerDependencies = devkitConfig.peerDependencies;
+      setFileData(this.packageJSONLocation, JSON.stringify(packageJSON, null, 2), 'overwrite');
+      await runCommand({ command: NODE_INSTALL_DEPS, name: 'Installing Node.js dependencies' });
+    }
 
-          // const { title, description, destination, variables } = await moonYml.blob();
+    // Install the dependencies.
+    if (this.props.template.language === Language.PYTHON) {
+      await runCommand({ command: UV_PYTHON_DEPS, name: 'Installing Python dependencies' });
+    }
 
-          // const template = new Template(item.name, title, description, destination, variables);
-
-          console.log(item.path, yml);
-          return [...(await acc)];
-        },
-        [] as unknown as Promise<Template[]>,
-      );
+    await logger.success('🎉 Template setup complete!');
   }
 }
+
+export type { TemplateInfo };
+export { Template };

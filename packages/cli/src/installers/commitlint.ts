@@ -21,17 +21,17 @@ const COMMITLINT_CONFIG_FILE = join(
 /**
  * Install Commitlint tool with Husky.
  */
-export default function installCommitlint() {
-  runCommand({ command: INSTALL_COMMITLINT, name: 'Commitlint' });
-  runCommand({ command: INSTALL_HUSKY, name: 'Husky' });
+export default async function installCommitlint() {
+  await runCommand({ command: INSTALL_COMMITLINT, name: 'Installing Commitlint tool' });
+  await runCommand({ command: INSTALL_HUSKY, name: 'Installing Husky tool' });
 
   // Add scripts to package.json.
-  runCommand({ command: COMMITLINT_SCRIPT, name: 'Add Commitlint Script' });
-  runCommand({ command: COMMIT_SCRIPT, name: 'Add Commit Script' });
-  runCommand({ command: HUSKY_PREPARE_SCRIPT, name: 'Add Husky Prepare Script' });
+  await runCommand({ command: COMMITLINT_SCRIPT, name: 'Adding Commitlint script' });
+  await runCommand({ command: COMMIT_SCRIPT, name: 'Adding Commit script' });
+  await runCommand({ command: HUSKY_PREPARE_SCRIPT, name: 'Adding Husky Prepare script' });
 
   // Initialize Husky.
-  runCommand({ command: INIT_HUSKY, name: 'Husky Init' });
+  await runCommand({ command: INIT_HUSKY, name: 'Initializing Husky' });
   setFileData(join(process.cwd(), '.husky/pre-commit'), '', 'overwrite');
 
   // Create .commitlint.config.ts file.
