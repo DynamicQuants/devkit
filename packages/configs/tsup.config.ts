@@ -2,12 +2,13 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: [
-    'src/eslint.ts',
-    'src/jest.ts',
-    'src/playwright.ts',
-    'src/prettier.mjs',
-    'src/tailwind.ts',
-    'src/vite.ts',
+    'src/commitlint/index.ts',
+    'src/eslint/index.ts',
+    'src/jest/index.ts',
+    'src/vite/index.ts',
+    'src/playwright/index.ts',
+    'src/prettier/index.ts',
+    'src/tailwind/index.ts',
   ],
   splitting: false,
   sourcemap: false,

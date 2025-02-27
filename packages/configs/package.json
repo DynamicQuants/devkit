@@ -24,64 +24,72 @@
     "url": "https://github.com/DynamicQuants/devkit.git"
   },
   "files": [
-    "dist"
+    "dist/**"
   ],
   "exports": {
+    "./commitlint": {
+      "import": "./dist/commitlint/index.mjs",
+      "require": "./dist/commitlint/index.js"
+    },
     "./eslint": {
-      "import": "./dist/eslint.mjs",
-      "require": "./dist/eslint.js"
+      "import": "./dist/eslint/index.mjs",
+      "require": "./dist/eslint/index.js"
     },
     "./jest": {
-      "import": "./dist/jest.mjs",
-      "require": "./dist/jest.js"
+      "import": "./dist/jest/index.mjs",
+      "require": "./dist/jest/index.js"
     },
     "./playwright": {
       "import": "./dist/playwright.mjs",
       "require": "./dist/playwright.js"
     },
     "./prettier": {
-      "import": "./dist/prettier.mjs",
-      "require": "./dist/prettier.js"
+      "import": "./dist/prettier/index.mjs",
+      "require": "./dist/prettier/index.js"
     },
     "./vite": {
-      "import": "./dist/vite.mjs",
-      "require": "./dist/vite.js"
+      "import": "./dist/vite/index.mjs",
+      "require": "./dist/vite/index.js"
     },
     "./tailwind": {
-      "import": "./dist/tailwind.mjs",
-      "require": "./dist/tailwind.js"
+      "import": "./dist/tailwind/index.mjs",
+      "require": "./dist/tailwind/index.js"
     },
     "./tsconfig/*.json": "./dist/tsconfig/*.json"
   },
   "typesVersions": {
     "*": {
+      "commitlint": [
+        "./dist/commitlint/index.d.ts"
+      ],
       "eslint": [
-        "./dist/eslint.d.ts"
+        "./dist/eslint/index.d.ts"
       ],
       "jest": [
-        "./dist/jest.d.ts"
+        "./dist/jest/index.d.ts"
       ],
       "playwright": [
-        "./dist/playwright.d.ts"
+        "./dist/playwright/index.d.ts"
       ],
       "prettier": [
-        "./dist/prettier.d.ts"
+        "./dist/prettier/index.d.ts"
       ],
       "tailwind": [
-        "./dist/tailwind.d.ts"
+        "./dist/tailwind/index.d.ts"
       ],
       "vite": [
-        "./dist/vite.d.ts"
+        "./dist/vite/index.d.ts"
       ]
     }
   },
   "scripts": {
     "format": "prettier --write \"src/**/*.{js,ts,md,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,md,json}\"",
-    "cp": "copyfiles -f ./src/jest/snapshotResolver.js ./src/jest/.swcrc ./peers.json ./dist && copyfiles -f ./tsconfig/*.json ./dist/tsconfig",
+    "cp": "copyfiles -f ./src/jest/snapshotResolver.js ./src/jest/.swcrc ./dist/jest && copyfiles -f ./src/tsconfig/*.json ./dist/tsconfig",
     "build": "rimraf dist && tsup"
   },
   "devDependencies": {
+    "@commitlint/types": "^19.5.0",
     "@eslint/compat": "^1.2.3",
     "@nx/eslint": "^20.2.2",
     "@nx/eslint-plugin": "^20.2.2",
@@ -149,5 +157,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "prettier": "./src/prettier.mjs"
+  "prettier": "./src/prettier/base.mjs"
 }
