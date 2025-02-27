@@ -1,0 +1,94 @@
+name: npm-publish
+description: Publish a package to npm
+author: ccosming
+
+branding:
+  icon: package
+  color: gray-dark
+
+inputs:
+  target:
+    description: The target to publish to (local or production)
+    required: true
+    default: 'local'
+
+  # For local, we need to setup the local registry and the git server.
+  local-registry-url:
+    description: The local npm registry url
+    default: ''
+  local-registry-token:
+    description: Token for the local npm registry
+    default: ''
+  local-scopes:
+    description: The registry scopes (comma separated, ie. @scope1,@scope2)
+    default: ''
+  local-git-server-url:
+    description: The git server to be used for the SSH connection (ie. http://0.0.0.0:2222)
+    default: ''
+  ssh-private-key:
+    description: The private key to be used for the SSH connection
+    default: ''
+  ssh-passphrase:
+    description: The passphrase related to the private key
+    default: ''
+  ssh-auth-sock:
+    description: The ssh auth sock to be used for the SSH connection
+    default: ''
+
+  # For npmjs, we need to setup the npm token.
+  npm-token:
+    description: The npm token for npmjs.org registry
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: 'Setup npm registry'
+      env:
+        NPM_TOKEN: ${{ inputs.npm-token }}
+      run: |
+        npm config set registry.npmjs.org/:_authToken $NPM_TOKEN --location project
+
+        if [[ ${{ inputs.local-registry-url }} != '' ]]; then
+          npm config set //${{ inputs.local-registry-url }}/:_authToken ${{ inputs.local-registry-token }} --location project
+        fi
+
+        if [[ ${{ inputs.local-scopes }} != '' ]]; then
+          IFS=$',';for scope in $(echo "${{ inputs.local-scopes }}"); do
+            npm config set $scope:registry ${{ inputs.local-registry-url }} --location project
+          done;IFS=$' '
+        fi
+
+    - if: ${{ inputs.target }} == 'local'
+      name: 'Setup SSH with a passphrase to connect to git server'
+      env:
+        LOCAL_GIT_SERVER_URL: ${{inputs.local-git-server-url}}
+        SSH_PRIVATE_KEY: ${{inputs.ssh-private-key}}
+        SSH_PASSPHRASE: ${{inputs.ssh-passphrase}}
+        SSH_AUTH_SOCK: ${{inputs.ssh-auth-sock}}
+      shell: bash
+      run: |
+        ssh-agent -a $SSH_AUTH_SOCK
+        echo "echo $SSH_PASSPHRASE" > ~/.ssh_askpass && chmod +x ~/.ssh_askpass
+        echo "$SSH_PRIVATE_KEY" | tr -d '\r' | DISPLAY=None SSH_ASKPASS=~/.ssh_askpass ssh-add -
+
+        local_git_server_url_parsed=(${LOCAL_GIT_SERVER_URL//:/ });
+        local_git_server_host=${local_git_server_url_parsed[1]//\//};
+        local_git_server_port=${local_git_server_url_parsed[2]};
+        cat << EOF > "$HOME/.ssh/config"
+        Host $local_git_server_host
+          Port $local_git_server_port
+          StrictHostKeyChecking no
+        EOF
+
+    # - name: '🔖 Publish package'
+    #   uses: changesets/action@v1
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     npm_config_registry: '${{ vars.NPM_REGISTRY_URL }}:${{ vars.NPM_REGISTRY_PORT }}'
+    #   with:
+    #     commit: '🔧 chore: new release'
+    #     title: '🔧 chore: new release'
+    #     publish: 'pnpm changeset publish'
+    #     createGithubReleases: false
+    #     setupGitUser: false
