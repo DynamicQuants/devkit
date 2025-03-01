@@ -15,5 +15,9 @@
   "[handlebars]": {
     "editor.formatOnSave": false
   },
-  "yaml.schemaStore.enable": true
+  "yaml.schemaStore.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.removeUnusedImports": "always",
+    "source.fixAll.eslint": "explicit"
+  }
 }
