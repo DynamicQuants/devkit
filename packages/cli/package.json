@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "copy": "copyfiles ./files/**/* dist",
+    "copy": "copyfiles ./**/presets/* dist",
     "build": "pnpm clean && tsup",
     "lint": "eslint \"{src,tests}/**/*.{ts,json}\" --fix",
     "dev": "nodemon ./src/index.ts",
