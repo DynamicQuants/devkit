@@ -11,5 +11,5 @@ export default defineConfig({
   shims: true,
   onSuccess: 'pnpm run copy',
   treeshake: true,
-  outDir: 'dist/src'
+  outDir: 'dist',
 });
