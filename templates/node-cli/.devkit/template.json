@@ -1,5 +1,4 @@
 {
-  "type": "template",
   "version": "1.0.0",
   "name": "node-cli",
   "description": "Node CLI template",

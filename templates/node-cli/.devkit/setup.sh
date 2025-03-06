@@ -1,0 +1,1 @@
+echo "This emulates the setup script for the template."
