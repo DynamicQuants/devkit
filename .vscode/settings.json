@@ -1,12 +1,14 @@
 {
   "eslint.workingDirectories": [{ "mode": "auto" }],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.referencesCodeLens.enabled": true,
   "editor.formatOnSave": true,
   "files.exclude": {
     "**/__pycache__/": true,
     "**/.pytest_cache/": true,
     ".mypy_cache/": true,
-    "**/.coverage": true
+    "**/.coverage": true,
+    "**/.git": false
   },
   "files.associations": {
     "*.css": "tailwindcss",
@@ -19,5 +21,7 @@
   "editor.codeActionsOnSave": {
     "source.removeUnusedImports": "always",
     "source.fixAll.eslint": "explicit"
-  }
+  },
+  "githubLocalActions.dockerDesktopPath": "/Applications/Docker.app",
+  "githubLocalActions.actCommand": "cd /Users/ccosming/Temp/devkit-test/test-workspace-1739481947598 && act"
 }
