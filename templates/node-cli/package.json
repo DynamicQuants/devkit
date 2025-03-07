@@ -34,7 +34,7 @@
     "yaml": "^2.7.0"
   },
   "devDependencies": {
-    "@dynamic-quants/configs": "workspace:*",
+    "@dynamic-quants/configs": "^1.0.0",
     "copyfiles": "^2.4.1",
     "nodemon": "^3.1.9",
     "rimraf": "^6.0.1",
