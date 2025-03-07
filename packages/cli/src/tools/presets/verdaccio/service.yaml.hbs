@@ -1,0 +1,11 @@
+services:
+  verdaccio:
+    image: verdaccio/verdaccio
+    ports:
+      - {{port}}:{{port}}
+    volumes:
+      - '{{storageDir}}:/verdaccio/storage'
+      - '{{confDir}}:/verdaccio/conf'
+      - '{{pluginsDir}}:/verdaccio/plugins'
+    restart: unless-stopped
+

@@ -2,81 +2,59 @@ import { program } from 'commander';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-import logger from './logger';
-import promps from './promps';
-import { Template } from './template';
-import { Language, Scope, Tools } from './types';
-import { Workspace } from './workspace';
+import { loadTemplates } from './promps';
+import { type TemplateProps, Workspace, type WorkspaceProps } from './workspace';
 
 /**
  * Creates a new workspace for the selected type.
  */
-async function create() {
-  const name = await promps.namePrompt('workspace');
-  const description = await promps.descriptionPrompt('workspace');
-  const languages = await promps.workspaceLanguagesPrompt();
-  const scope = await promps.workspaceScopePrompt();
-  const repoName = await promps.repoNamePrompt();
-  const tools = await promps.toolsPrompt();
-
-  const workspace = new Workspace({
-    scope,
-    name,
-    description,
-    languages,
-    tools,
-    repoName,
-  });
-
-  await workspace.create();
-  logger.stop();
+async function create(args: Partial<WorkspaceProps>) {
+  const workspace = await Workspace.create(args);
+  await workspace.setup();
 }
 
-async function template() {
-  // Load workspace and check if it is valid.
+type TemplateCommandOptions = Partial<TemplateProps> & {
+  list: boolean;
+};
+
+async function template(args: TemplateCommandOptions) {
+  if (args.list) {
+    const templates = await loadTemplates();
+    console.log(templates);
+    return;
+  }
+
   const workspace = await Workspace.load();
-
-  // Get the template name and description.
-  const name = await promps.namePrompt('project');
-  const description = await promps.descriptionPrompt('project');
-  const tmpl = await promps.templatePrompt(workspace.config.languages, workspace.config.scope);
-
-  const template = new Template({
-    name,
-    description,
-    template: tmpl,
-    workspace,
-  });
-
-  await template.setup();
+  await workspace.addProject(args);
 }
 
 async function test() {
-  const workspace = new Workspace(
-    {
-      scope: Scope.SYSTEM_MONOREPO,
-      name: `test-workspace-${Date.now()}`,
-      description: 'Some description',
-      languages: [Language.NODEJS, Language.PYTHON],
-      tools: [Tools.ACT, Tools.VERDACCIO, Tools.CHANGESETS, Tools.COMMITLINT],
-      repoName: `@ccosming/test-workspace-${Date.now()}`,
-    },
-    '/Users/ccosming/Temp/devkit-test',
-  );
-  await workspace.create();
+  const id = Date.now();
+  const workspace = new Workspace({
+    scope: 'system-monorepo',
+    name: `test-workspace-${id}`,
+    description: 'Some description',
+    languages: ['node', 'python'],
+    tools: ['act', 'changeset', 'commitlint', 'verdaccio'],
+    license: 'mit',
+    repoName: `@ccosming/test-workspace-${id}`,
+    rootPath: '/Users/ccosming/Temp/devkit-test',
+  });
+  await workspace.setup();
 }
 
 function main() {
-  logger.logo();
-
   const packageJSON = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8'));
   program.version(packageJSON.version).description('Dynamic Quants DevKit CLI');
   program
     .command('create')
+    .option('-n, --name <name>', 'The name of the workspace')
+    .option('-d, --description <description>', 'The description of the workspace')
     .description('Create a new workspace with the selected configuration')
     .action(create);
   program
     .command('template')
+    .option('-l, --list', 'List all available templates')
     .description('Add a new project to the workspace based on a template')
     .action(template);
   program.command('test').description('Test the workspace').action(test);

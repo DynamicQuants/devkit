@@ -1,0 +1,5 @@
+# Verdaccio.
+.verdaccio/conf/*
+.verdaccio/plugins/*
+.verdaccio/storage/*
+!.verdaccio/conf/config.yaml

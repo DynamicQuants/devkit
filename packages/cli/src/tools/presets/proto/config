@@ -1,0 +1,5 @@
+[settings]
+detect-strategy = 'prefer-prototools'
+auto-clean = true
+auto-install = true
+pin-latest = 'local'

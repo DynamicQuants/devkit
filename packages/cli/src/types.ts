@@ -1,60 +1,33 @@
 /**
- * Represents the scope of the workspace.
+ * List of scopes that can be used for the workspace.
  */
-export const Scope = {
-  // LIB_OR_APP: 'Single Library or Application project',
-  // LIB_MONOREPO: 'Library Monorepo with multiple packages',
-  // SYSTEM_MONOREPO: 'System Monorepo with packages, libs and apps',
-  LIB_OR_APP: 'lib-or-app',
-  LIB_MONOREPO: 'lib-monorepo',
-  SYSTEM_MONOREPO: 'system-monorepo',
-} as const;
+const scopes = {
+  'lib-or-app': 'Single Library or Application project',
+  'lib-monorepo': 'Library Monorepo with multiple packages',
+  'system-monorepo': 'System Monorepo with packages, libs and apps',
+};
 
-export type Scope = (typeof Scope)[keyof typeof Scope];
-
-export const Language = {
-  NODEJS: 'node',
-  PYTHON: 'python',
-} as const;
-
-export type Language = (typeof Language)[keyof typeof Language];
-
-export interface TemplateInfo {
-  name: string;
-  description: string;
-  language: Language;
-  scope: Scope[];
-  path: string;
-}
+type Scope = keyof typeof scopes;
 
 /**
- * Available tools that can be installed and configured by the toolchain.
+ * List of licenses that can be used for the workspace or a specific project.
  */
-export const Tools = {
-  // NODEJS: 'NodeJS with TypeScript and pnpm',
-  // PYTHON: 'Python with uv',
-  // ACT: 'Nektos act local github actions runner',
-  // VERDACCIO: 'Verdaccio local package registry',
-  // CHANGESETS: 'ChangeSets local change management tool',
-  // COMMITLINT: 'CommitLint local commit message linter',
-  ACT: 'act',
-  VERDACCIO: 'verdaccio',
-  CHANGESETS: 'changeset',
-  COMMITLINT: 'commitlint',
-} as const;
-
-export type Tools = (typeof Tools)[keyof typeof Tools];
+const licenses = {
+  mit: 'MIT License: Permits free use, modification, and distribution.',
+  apache: 'Apache License: Allows free use, modification, and distribution.',
+  gpl: 'GPL License: Ensures software freedom, including source code access.',
+  gpl_3: 'GPL-3.0 License: Strongest copyleft license, ensuring software freedom.',
+  gpl_2: 'GPL-2.0 License: Ensures software freedom, with some restrictions.',
+  bsd: 'BSD License: Allows free use, modification, and distribution with minimal restrictions.',
+  bsd_2: 'BSD-2-Clause License: Simplified BSD License with two clauses.',
+  bsd_3: 'BSD-3-Clause License: New BSD License with three clauses.',
+  unlicensed: 'Unlicensed: No license can be used with no restrictions.',
+};
 
 /**
  * Represents the license of the workspace.
  */
-export const License = {
-  MIT: 'MIT',
-  APACHE_2_0: 'APACHE_2_0',
-  GPL_3_0: 'GPL_3_0',
-  BSD_3_CLAUSE: 'GPL_3_0',
-  ISC: 'ISC',
-  UNLICENSED: 'UNLICENSED',
-} as const;
+type License = keyof typeof licenses;
 
-export type License = (typeof License)[keyof typeof License];
+export { licenses, scopes };
+export type { License, Scope };

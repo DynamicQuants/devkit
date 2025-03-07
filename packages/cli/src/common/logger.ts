@@ -1,38 +1,50 @@
 import chalk from 'chalk';
-import ora, { oraPromise } from 'ora';
+import ora, { type Ora } from 'ora';
 import os from 'os';
 
 /**
- * A simple logger class for the CLI using chalk.
+ * A simple logger class for the CLI using Ora and chalk.
  */
 class Logger {
-  static _spinner = ora({
-    color: 'magenta',
-    text: 'Starting...',
-  }).start();
+  static _spinner: Ora;
+  public context = '';
+
+  public start(text: string) {
+    Logger._spinner = ora({
+      text,
+      color: 'white',
+      discardStdin: false,
+    }).start();
+  }
 
   public stop() {
     Logger._spinner.stop();
   }
 
-  public async info(message: string) {
-    await new Promise((resolve) => setTimeout(resolve, 150));
-    Logger._spinner.text = message;
+  public setContext(prefix: string) {
+    this.context = chalk.bgGray(chalk.bold(prefix));
   }
 
-  public async error(message: string) {
+  public resume() {
+    Logger._spinner = Logger._spinner.clear();
+  }
+
+  public info(message: string) {
+    const prefix = this.context.length > 0 ? `${this.context}` : '';
+    Logger._spinner.text = `${prefix} ${message}`;
+    Logger._spinner.render();
+  }
+
+  public error(message: string) {
     Logger._spinner.fail(message);
-    Logger._spinner.stop();
   }
 
-  public async success(message: string) {
+  public success(message: string) {
     Logger._spinner.succeed(message);
-    Logger._spinner.stop();
   }
 
-  public async warn(message: string) {
+  public warn(message: string) {
     Logger._spinner.warn(message);
-    Logger._spinner.stop();
   }
 
   public brand(message: string) {
@@ -57,4 +69,4 @@ class Logger {
   }
 }
 
-export default new Logger();
+export const logger = new Logger();
