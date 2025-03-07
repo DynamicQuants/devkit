@@ -1,21 +1,14 @@
-act = "0.2.71"
-moon = "^1.31.2"
+act = "0.2.75"
+moon = "^1.32.8"
 node = "^20.18.1"
-pnpm = "^9.15.3"
+pnpm = "^10.6.1"
 proto = "0.45.0"
-python = "~3.11"
-uv = "^0.5.14"
+python = "~3.12"
+uv = "^0.6.5"
 
 [plugins]
 act = "https://raw.githubusercontent.com/theomessin/proto-toml-plugins/master/act.toml"
-moon = "https://raw.githubusercontent.com/moonrepo/moon/master/proto-plugin.toml"
-uv = "https://raw.githubusercontent.com/Phault/proto-toml-plugins/main/uv/plugin.toml"
 
 [settings]
 auto-install = true
-builtin-plugins = [
-    "node",
-    "python",
-    "pnpm",
-]
 detect-strategy = "only-prototools"
