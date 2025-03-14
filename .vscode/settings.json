@@ -12,7 +12,8 @@
   },
   "files.associations": {
     "*.css": "tailwindcss",
-    "*.tera": "handlebars"
+    "*.tera": "handlebars",
+    "*.json": "jsonc"
   },
   "[handlebars]": {
     "editor.formatOnSave": false

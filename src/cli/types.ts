@@ -1,3 +1,42 @@
+import type { supportedLanguages } from './languages';
+import type { optionalTools } from './tools';
+
+type Language = keyof typeof supportedLanguages;
+
+type OptionalTool = keyof typeof optionalTools;
+
+/**
+ * Properties that are used related to a workspace.
+ */
+type WorkspaceProps = {
+  scope: Scope;
+  name: string;
+  description: string;
+  languages: Language[];
+  tools: OptionalTool[];
+  license: License;
+  repoName: string | null;
+  rootPath?: string;
+};
+
+/**
+ * Represents the project properties.
+ */
+type ProjectProps = {
+  name: string;
+  description: string;
+};
+
+/**
+ * Represents the template information.
+ */
+type TemplateProps = {
+  name: string;
+  description: string;
+  language: Language;
+  path: string;
+};
+
 /**
  * List of scopes that can be used for the workspace.
  */
@@ -30,4 +69,4 @@ const licenses = {
 type License = keyof typeof licenses;
 
 export { licenses, scopes };
-export type { License, Scope };
+export type { License, Scope, Language, WorkspaceProps, ProjectProps, TemplateProps, OptionalTool };

@@ -4,11 +4,10 @@ import tiged from 'tiged';
 import yml from 'yaml';
 
 import { callPrompt, logger, runCommand, setFileData } from './common';
-import { type Language, NodeLanguage, installLanguages } from './languages';
-import { projectPrompt, workspacePrompt } from './promps';
-import type { OptionalTool } from './tools';
+import { NodeLanguage, installLanguages } from './languages';
+import { projectPrompt, workspacePrompt } from './prompts';
 import { checkRequiredTools, installMandatoryTools, installOptionalTools } from './tools';
-import type { License, Scope } from './types';
+import type { ProjectProps, WorkspaceProps } from './types';
 
 // Constants.
 const TEMPLATE_REPO_NAME = 'DynamicQuants/devkit';
@@ -16,38 +15,6 @@ const TEMPLATE_REPO_NAME = 'DynamicQuants/devkit';
 // Commands.
 const GET_PROTO_STATUS_CMD = 'proto status --json';
 const RUN_TEMPLATE_SETUP_CMD = 'chmod +x ./.devkit/setup.sh && ./.devkit/setup.sh';
-
-/**
- * Properties that are used related to a workspace.
- */
-type WorkspaceProps = {
-  scope: Scope;
-  name: string;
-  description: string;
-  languages: Language[];
-  tools: OptionalTool[];
-  license: License;
-  repoName: string | null;
-  rootPath?: string;
-};
-
-/**
- * Represents the project properties.
- */
-type ProjectProps = {
-  name: string;
-  description: string;
-};
-
-/**
- * Represents the template information.
- */
-type TemplateProps = {
-  name: string;
-  description: string;
-  language: Language;
-  path: string;
-};
 
 /**
  * A workspace is a codebase space that contains a collection of tools and languages that are used
@@ -175,7 +142,7 @@ class Workspace {
   }
 
   public async setup() {
-    const { rootPath, tools, languages } = this.config;
+    const { rootPath } = this.config;
 
     // Check if the workspace already exists.
     const devkitFileExist = existsSync(join(rootPath, 'devkit.json'));
@@ -192,12 +159,11 @@ class Workspace {
     // Prepare the workspace and installing all tools.
     await checkRequiredTools(this);
     await installMandatoryTools();
-    await installLanguages(languages, this);
-    await installOptionalTools(tools, this);
+    await installLanguages(this);
+    await installOptionalTools(this);
 
     logger.success('🎉 Workspace setup complete!');
   }
 }
 
 export { Workspace };
-export type { WorkspaceProps, TemplateProps, ProjectProps };

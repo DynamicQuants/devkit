@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "declaration": false,
+    "baseUrl": ".",
+    "paths": {
+      // Here we can add paths to the monorepo
+    }
+  },
+  "files": [],
+  "include": [],
+  "exclude": ["node_modules", "dist"]
+}

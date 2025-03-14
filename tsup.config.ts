@@ -1,0 +1,42 @@
+import { defineConfig } from 'tsup';
+
+export default defineConfig({
+  entry: [
+    'src/cli/index.ts',
+    'src/configs/commitlint/index.ts',
+    'src/configs/eslint/index.ts',
+    'src/configs/jest/index.ts',
+    'src/configs/vite/index.ts',
+    'src/configs/playwright/index.ts',
+    'src/configs/prettier/index.ts',
+    'src/configs/tailwind/index.ts',
+  ],
+  splitting: false,
+  sourcemap: false,
+  clean: true,
+  format: ['esm', 'cjs'],
+  outExtension: ({ format }) => ({
+    js: format === 'cjs' ? '.cjs' : '.mjs',
+  }),
+  dts: true,
+  tsconfig: './tsconfig.json',
+  shims: true,
+  onSuccess: 'pnpm run copy:tsconfig && pnpm run copy:presets',
+  treeshake: true,
+  outDir: 'dist',
+  external: [
+    '@inquirer/prompts',
+    '@octokit/rest',
+    'chalk',
+    'commander',
+    'handlebars',
+    'ora',
+    'portfinder',
+    'tiged',
+    'yaml',
+  ],
+  minify: true,
+  minifyIdentifiers: true,
+  minifySyntax: true,
+  minifyWhitespace: true,
+});

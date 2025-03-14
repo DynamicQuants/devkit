@@ -15,13 +15,12 @@ const supportedLanguages = {
   [PythonLanguage.languageName]: new PythonLanguage(),
 };
 
-type Language = keyof typeof supportedLanguages;
-
 /**
  * Install the languages. If any of them is not supported, it will
  * throw `LanguageNotFoundError`.
  */
-async function installLanguages(languages: Language[], workspace: Workspace) {
+async function installLanguages(workspace: Workspace) {
+  const { languages } = workspace.config;
   logger.start('Installing languages');
 
   await Promise.all(
@@ -39,4 +38,3 @@ async function installLanguages(languages: Language[], workspace: Workspace) {
 }
 
 export { installLanguages, NodeLanguage, PythonLanguage, supportedLanguages };
-export type { Language };

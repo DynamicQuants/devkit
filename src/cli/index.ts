@@ -2,8 +2,9 @@ import { program } from 'commander';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-import { loadTemplates } from './promps';
-import { type TemplateProps, Workspace, type WorkspaceProps } from './workspace';
+import { loadTemplates } from './prompts';
+import type { TemplateProps, WorkspaceProps } from './types';
+import { Workspace } from './workspace';
 
 /**
  * Creates a new workspace for the selected type.
@@ -43,8 +44,11 @@ async function test() {
   await workspace.setup();
 }
 
+/**
+ * Main function for the CLI.
+ */
 function main() {
-  const packageJSON = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8'));
+  const packageJSON = JSON.parse(readFileSync(join(__dirname, '../..', 'package.json'), 'utf8'));
   program.version(packageJSON.version).description('Dynamic Quants DevKit CLI');
   program
     .command('create')

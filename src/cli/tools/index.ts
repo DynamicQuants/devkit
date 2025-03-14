@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { type RequiredTool, logger } from '../common';
+import { type RequiredTool, type Tool, logger } from '../common';
 import { type Workspace } from '../workspace';
 import { ActTool } from './act';
 import { ChangesetTool } from './changeset';
@@ -16,7 +16,7 @@ const requiredTools: Record<string, RequiredTool> = {
   [DockerTool.toolName]: new DockerTool(),
 };
 
-const mandatoryTools = {
+const mandatoryTools: Record<string, Tool> = {
   [MoonTool.toolName]: new MoonTool(),
   [ProtoTool.toolName]: new ProtoTool(),
 };
@@ -27,8 +27,6 @@ const optionalTools = {
   [CommitlintTool.toolName]: new CommitlintTool(),
   [VerdaccioTool.toolName]: new VerdaccioTool(),
 };
-
-type OptionalTool = keyof typeof optionalTools;
 
 function joinNames(tools: any | string[]) {
   return chalk.yellow(
@@ -64,7 +62,8 @@ async function installMandatoryTools() {
 /**
  * Install the selected tools.
  */
-async function installOptionalTools(tools: OptionalTool[], workspace: Workspace) {
+async function installOptionalTools(workspace: Workspace) {
+  const { tools } = workspace.config;
   const toolsInstances = tools.map((tool) => optionalTools[tool]);
   logger.start('Installing selected tools');
   for (const tool of toolsInstances) {
@@ -88,5 +87,3 @@ export {
   installOptionalTools,
   optionalTools,
 };
-
-export type { OptionalTool };

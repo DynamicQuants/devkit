@@ -4,11 +4,19 @@ import { join } from 'path';
 import yml from 'yaml';
 
 import { InvalidParameterError, loadRepoContent, logger } from './common';
-import { type Language, supportedLanguages } from './languages';
-import { type OptionalTool, optionalTools } from './tools';
-import { type License, type Scope, licenses, scopes } from './types';
-import type { ProjectProps, TemplateProps } from './workspace';
-import { type WorkspaceProps } from './workspace';
+import { supportedLanguages } from './languages';
+import { optionalTools } from './tools';
+import {
+  type Language,
+  type License,
+  type OptionalTool,
+  type ProjectProps,
+  type Scope,
+  type TemplateProps,
+  type WorkspaceProps,
+  licenses,
+  scopes,
+} from './types';
 
 /**
  * Get the supported tools.

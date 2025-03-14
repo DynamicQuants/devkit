@@ -1,0 +1,14 @@
+{
+  "extends": "./src/configs/tsconfig/node.cli.json",
+  "compilerOptions": {
+    "composite": false,
+    "declaration": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "types": ["node"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
