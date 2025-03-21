@@ -1,3 +1,3 @@
-import { eslintNodeCli } from '@dynamic-quants/configs/eslint';
+import { eslintNodeCli } from '@dynamic-quants/devkit/eslint';
 
 export default eslintNodeCli;

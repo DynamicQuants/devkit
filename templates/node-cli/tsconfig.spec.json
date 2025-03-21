@@ -1,5 +1,5 @@
 {
-  "extends": "@dynamic-quants/configs/tsconfig/node.cli.json",
+  "extends": "@dynamic-quants/devkit/tsconfig/node.cli.json",
   "compilerOptions": {
     "composite": true,
     "declaration": true,

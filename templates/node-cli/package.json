@@ -8,7 +8,7 @@
     "node"
   ],
   "bin": {
-    "node-cli": "./dist/src/index.js"
+    "node-cli": "./dist/index.mjs"
   },
   "files": [
     "dist"
@@ -19,7 +19,7 @@
     "build": "pnpm clean && tsup",
     "lint": "eslint \"{src,tests}/**/*.{ts,json}\" --fix",
     "dev": "nodemon ./src/index.ts",
-    "start": "node dist/src/index.js",
+    "start": "node dist/index.mjs",
     "test": "jest --verbose",
     "test-watch": "jest --watch",
     "test-cov": "jest --coverage",
@@ -34,7 +34,7 @@
     "yaml": "^2.7.0"
   },
   "devDependencies": {
-    "@dynamic-quants/configs": "^1.0.0",
+    "@dynamic-quants/devkit": "workspace:*",
     "copyfiles": "^2.4.1",
     "nodemon": "^3.1.9",
     "rimraf": "^6.0.1",
